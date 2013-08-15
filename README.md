@@ -20,14 +20,14 @@ Responsible for validate a brazilian phone number.
 It contains specific validation rules.
 
 **Methods:**
-- ** isValid($phone) : ** Checks if it is a valid brazilian phone number.
-- ** isValidCellphone($phone) : ** Checks if it is a valid brazilian cellphone phone number.
-- ** isValidLandline($phone) : ** Checks if it is a valid brazilian landline phone number.
-- ** isValidSMP($phone) : ** Checks if it is a valid brazilian cellphone number and specifically from the SMP type.
+- **isValid($phone) :** Checks if it is a valid brazilian phone number.
+- **isValidCellphone($phone) :** Checks if it is a valid brazilian cellphone phone number.
+- **isValidLandline($phone) :** Checks if it is a valid brazilian landline phone number.
+- **isValidSMP($phone) :** Checks if it is a valid brazilian cellphone number and specifically from the SMP type.<br/>
 *SMP - Serviço Móvel Pessoal (in English, Personal Mobile Service)*
-- ** isValidSME($phone) : ** Checks if it is a valid brazilian cellphone number and specifically from the SME type.
+- **isValidSME($phone) :** Checks if it is a valid brazilian cellphone number and specifically from the SME type.<br/>
 *SME - Serviço Móvel Especializado (in English, Specialized Mobile Service)*
-- ** isValidSTFC($phone) : ** Checks if it is a brazilian landline phone number.
+- **isValidSTFC($phone) :** Checks if it is a brazilian landline phone number and specifically from STFC type.<br/>
 *STFC - Serviço Telefônico Fixo Comutado (in English, Landline Telephone Service)*
 
 ```php
@@ -62,7 +62,7 @@ http://sistemas.anatel.gov.br/sapn/ArquivosABR/faixaSTFC.asp?SISQSmodulo=18100
 
 * - NOTE: Usually, you should download the incremental version of the file,
 but you can remove all the content from the data directory and create the 
-dataset by your self. In this case, start processing the general version of 
+dataset by yourself. In this case, start processing the general version of 
 the file and its incremental files successively.*
 
 ####Processing the dataset
