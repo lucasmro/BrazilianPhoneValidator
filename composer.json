@@ -1,4 +1,5 @@
 {
+    "name": "empregoligado/brazilianphonevalidator",
     "autoload": {
         "psr-0": { "EmpregoLigado\\BrazilianPhoneValidator": "src/" }
     }
