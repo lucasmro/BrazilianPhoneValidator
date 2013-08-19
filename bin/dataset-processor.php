@@ -15,7 +15,7 @@ if (PHP_SAPI !== 'cli') {
 
 class DatasetProcessor
 {
-    const INFO_JSON_FILENAME = 'info';
+    const INFO_FILENAME = 'info';
     const DATASET_SMP_FILENAME = 'dataset.smp';
     const DATASET_SME_FILENAME = 'dataset.sme';
     const DATASET_STFC_FILENAME = 'dataset.stfc';
@@ -71,8 +71,8 @@ class DatasetProcessor
         // Holds information about processed files.
         $this->info = array();
 
-        if ($this->fileExists(self::INFO_JSON_FILENAME . '.json')) {
-            $content = file_get_contents($this->outputDirectory . DIRECTORY_SEPARATOR . self::INFO_JSON_FILENAME . '.json');
+        if ($this->fileExists(self::INFO_FILENAME . '.json')) {
+            $content = file_get_contents($this->outputDirectory . DIRECTORY_SEPARATOR . self::INFO_FILENAME . '.json');
             $this->info = json_decode($content, true);
         }
 
@@ -195,7 +195,7 @@ class DatasetProcessor
             $this->info = array($this->type => array($this->filename));
         }
 
-        $this->saveToJsonFile($this->info, self::INFO_JSON_FILENAME);
+        $this->saveToJsonFile($this->info, self::INFO_FILENAME);
     }
 
     private function concatenateArrays($array1, $array2)
