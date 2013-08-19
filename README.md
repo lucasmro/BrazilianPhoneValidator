@@ -9,7 +9,7 @@ main telephone types:
 - Landline phones - [STFC](http://tinyurl.com/anatel-stfc), *Serviço
   Telefônico Fixo Comutado* (Switched Landline Telephone Service) in the
   Anatel specifications
-- Push-to-talk phones - [SME](http://tinyurl.com/anatel-smX) *Serviço Móvel
+- Push-to-talk phones - [SME](http://tinyurl.com/anatel-smX), *Serviço Móvel
   Especializado* (Specialized Mobile Service) in Anatel specifications
 
 [![Build Status](https://travis-ci.org/EmpregoLigado/BrazilianPhoneValidator.png)](https://travis-ci.org/EmpregoLigado/BrazilianPhoneValidator)
