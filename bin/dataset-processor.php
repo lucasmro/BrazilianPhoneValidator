@@ -1,6 +1,14 @@
 <?php
 
 namespace EmpregoLigado\BrazilianPhoneValidator;
+/*
+ * This file is part of BrazilianPhoneValidator.
+ *
+ * (c) Cardinal Tecnologia Ltda.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 class DatasetProcessor
 {

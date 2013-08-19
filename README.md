@@ -121,4 +121,4 @@ them independently to use for validation or for other purposes.
 
 ## License
 
-TODO: License
+This library is licensed under the MIT license - see the LICENSE file for details.
