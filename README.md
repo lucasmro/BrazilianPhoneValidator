@@ -106,7 +106,7 @@ To process the dataset files correctly, you must download the latest "Geral"
 (general) file, process it and then process all (if any) the additional
 incremental files which the date is greater than the "Geral" file date.
 
-    $ php bin/generate-dataset.php /path/to/FAIXA_SMP_20130803_0330_GERAL.txt data/
+    $ php bin/dataset-processor.php /path/to/FAIXA_SMP_20130803_0330_GERAL.txt data/
 
 This library ships with the latest possible dataset version. You can download
 them independently to use for validation or for other purposes.
