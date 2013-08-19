@@ -28,22 +28,7 @@ class Validator
 
     public function isValid($phone)
     {
-        return $this->isValidSMP($phone) || $this->isValidSME($phone) || $this->isValidSTFC($phone);
-    }
-
-    public function isValidSMP($phone)
-    {
-        return $this->isValidRange($phone, self::TYPE_SMP);
-    }
-
-    public function isValidSME($phone)
-    {
-        return $this->isValidRange($phone, self::TYPE_SME);
-    }
-
-    public function isValidSTFC($phone)
-    {
-        return $this->isValidRange($phone, self::TYPE_STFC);
+        return $this->isValidSMP($phone) || $this->isValidSTFC($phone) || $this->isValidSME($phone);
     }
 
     public function isValidCellphone($phone)
@@ -54,6 +39,21 @@ class Validator
     public function isValidLandline($phone)
     {
         return $this->isValidSTFC($phone);
+    }
+
+    public function isValidSME($phone)
+    {
+        return $this->isValidRange($phone, self::TYPE_SME);
+    }
+
+    public function isValidSMP($phone)
+    {
+        return $this->isValidRange($phone, self::TYPE_SMP);
+    }
+
+    public function isValidSTFC($phone)
+    {
+        return $this->isValidRange($phone, self::TYPE_STFC);
     }
 
     private function isValidRange($phone, $type)
