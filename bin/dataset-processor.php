@@ -1,10 +1,21 @@
 <?php
 
-namespace EmpregoLigado\BrazilianPhoneValidator;
+/*
+ * This file is part of BrazilianPhoneValidator.
+ *
+ * (c) Cardinal Tecnologia Ltda.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+if (PHP_SAPI !== 'cli') {
+  exit(1);
+}
 
 class DatasetProcessor
 {
-    const INFO_JSON_FILENAME = 'info';
+    const INFO_FILENAME = 'info';
     const DATASET_SMP_FILENAME = 'dataset.smp';
     const DATASET_SME_FILENAME = 'dataset.sme';
     const DATASET_STFC_FILENAME = 'dataset.stfc';
@@ -13,8 +24,8 @@ class DatasetProcessor
     private $filepath;
     private $filename;
     private $outputDirectory;
-    private $dataSetFileName;
-    private $dataSet;
+    private $datasetFilename;
+    private $dataset;
     private $info;
 
     // Auxiliary Attributes
@@ -46,13 +57,13 @@ class DatasetProcessor
 
         if (strpos($this->filename, 'SMP') !== false) {
             $this->type = 'smp';
-            $this->dataSetFileName = self::DATASET_SMP_FILENAME;
+            $this->datasetFilename = self::DATASET_SMP_FILENAME;
         } elseif (strpos($this->filename, 'SME') !== false) {
             $this->type = 'sme';
-            $this->dataSetFileName = self::DATASET_SME_FILENAME;
+            $this->datasetFilename = self::DATASET_SME_FILENAME;
         } elseif (strpos($this->filename, 'STFC') !== false) {
             $this->type = 'stfc';
-            $this->dataSetFileName = self::DATASET_STFC_FILENAME;
+            $this->datasetFilename = self::DATASET_STFC_FILENAME;
         } else {
             throw new \InvalidArgumentException('Data source file is invalid.');
         }
@@ -60,12 +71,12 @@ class DatasetProcessor
         // Holds information about processed files.
         $this->info = array();
 
-        if ($this->fileExists(self::INFO_JSON_FILENAME . '.json')) {
-            $content = file_get_contents($this->outputDirectory . DIRECTORY_SEPARATOR . self::INFO_JSON_FILENAME . '.json');
+        if ($this->fileExists(self::INFO_FILENAME . '.json')) {
+            $content = file_get_contents($this->outputDirectory . DIRECTORY_SEPARATOR . self::INFO_FILENAME . '.json');
             $this->info = json_decode($content, true);
         }
 
-        $this->dataSet = array();
+        $this->dataset = array();
 
         $this->countProcessedRows = 0;
         $this->countCreatedRows = 0;
@@ -79,7 +90,7 @@ class DatasetProcessor
     {
         if ($this->isNewDataSourceFile()) {
             $this->parse();
-            $this->saveDataSet();
+            $this->saveDataset();
             $this->saveInfoFile();
 
             return true;
@@ -113,7 +124,7 @@ class DatasetProcessor
                     $prefix = $row[3];
                     $initialRange = $row[4];
                     $finalRange = $row[5];
-    
+
                     if ($this->auxPrefix == $prefix) {
                         // This range continues the previous range?
                         if ($this->auxFinalRange + 1 == $initialRange) {
@@ -125,7 +136,7 @@ class DatasetProcessor
                         $this->pushToArray($areaCode, $prefix, $initialRange, $finalRange);
                     }
                 }
-    
+
                 $this->countProcessedRows++;
             }
         }
@@ -133,7 +144,7 @@ class DatasetProcessor
         // Persist last instruction
         $this->pushToArray($this->auxAreaCode, $this->auxPrefix, $this->auxInitialRange, $this->auxFinalRange);
 
-        ksort($this->dataSet);
+        ksort($this->dataset);
     }
 
     private function pushToArray($areaCode, $prefix, $initialRange, $finalRange)
@@ -144,15 +155,15 @@ class DatasetProcessor
             $fr = str_pad($this->auxFinalRange, 4, '0', STR_PAD_LEFT);
             $range = $ir . '-' . $fr;
 
-            if (!isset($this->dataSet[$this->auxAreaCode])) {
-                $this->dataSet[$this->auxAreaCode] = array();
+            if (!isset($this->dataset[$this->auxAreaCode])) {
+                $this->dataset[$this->auxAreaCode] = array();
             }
 
             // Generate dataset with keys based on areaCode and prefix
-            if (!array_key_exists($this->auxPrefix, $this->dataSet[$this->auxAreaCode])) {
-                $this->dataSet[$this->auxAreaCode][$this->auxPrefix] = array($range);
+            if (!array_key_exists($this->auxPrefix, $this->dataset[$this->auxAreaCode])) {
+                $this->dataset[$this->auxAreaCode][$this->auxPrefix] = array($range);
             } else {
-                $this->dataSet[$this->auxAreaCode][$this->auxPrefix][] = $range;
+                $this->dataset[$this->auxAreaCode][$this->auxPrefix][] = $range;
             }
 
             $this->countCreatedRows++;
@@ -165,15 +176,15 @@ class DatasetProcessor
         $this->auxFinalRange = $finalRange;
     }
 
-    private function saveDataSet()
+    private function saveDataset()
     {
-        if ($this->fileExists($this->dataSetFileName . '.php')) {
-            $oldDataSet= $this->loadDataSetFile();
-            $this->dataSet = $this->concatenateArrays($oldDataSet, $this->dataSet);
+        if ($this->fileExists($this->datasetFilename . '.php')) {
+            $oldDataset= $this->loadDatasetFile();
+            $this->dataset = $this->concatenateArrays($oldDataset, $this->dataset);
         }
 
-        $this->saveToPhpFile($this->dataSet, $this->dataSetFileName);
-        $this->saveToJsonFile($this->dataSet, $this->dataSetFileName);
+        $this->saveToPhpFile($this->dataset, $this->datasetFilename);
+        $this->saveToJsonFile($this->dataset, $this->datasetFilename);
     }
 
     private function saveInfoFile()
@@ -184,7 +195,7 @@ class DatasetProcessor
             $this->info = array($this->type => array($this->filename));
         }
 
-        $this->saveToJsonFile($this->info, self::INFO_JSON_FILENAME);
+        $this->saveToJsonFile($this->info, self::INFO_FILENAME);
     }
 
     private function concatenateArrays($array1, $array2)
@@ -226,9 +237,9 @@ TEMPLATE;
         file_put_contents($this->outputDirectory . DIRECTORY_SEPARATOR . $filename . '.json', json_encode($data));
     }
 
-    private function loadDataSetFile()
+    private function loadDatasetFile()
     {
-        return include $this->outputDirectory . DIRECTORY_SEPARATOR . $this->dataSetFileName . '.php';
+        return include $this->outputDirectory . DIRECTORY_SEPARATOR . $this->datasetFilename . '.php';
     }
 
     private function fileExists($filename)
@@ -239,17 +250,17 @@ TEMPLATE;
 
 function help()
 {
-    //$message  = 'This is the help' . PHP_EOL;
-    //$message .= PHP_EOL;
+    $message  = 'This script generates a dataset file using an Anatel dataset as source.' . PHP_EOL;
+    $message .= PHP_EOL;
     $message  = 'Usage:   php generate-dataset.php [datasource-file] [destination-path]' . PHP_EOL;
-    $message .= 'Example: php generate-dataset.php /tmp/FAIXA_SME_20130803_0832_GERAL.txt ../data/' . PHP_EOL;
+    $message .= 'Example: php generate-dataset.php /path/to/FAIXA_SME_20130803_0832_GERAL.txt ../data/' . PHP_EOL;
     $message .= PHP_EOL;
     $message .= 'Arguments:' . PHP_EOL;
     $message .= 'datasource-file     The path to the datasource file' . PHP_EOL;
     $message .= 'destination-path    Directory to save the generated dataset files (PHP and JSON files)' . PHP_EOL;
     $message .= PHP_EOL;
     $message .= 'Options:' . PHP_EOL;
-    $message .= '-h|--help            Display this help message' . PHP_EOL;
+    $message .= '-h|--help           Display this help message' . PHP_EOL;
     $message .= PHP_EOL;
 
     print $message;
@@ -269,12 +280,12 @@ $dataSourceFilePath = isset($argv[1]) ? $argv[1] : null;
 $outputDirectory = isset($argv[2]) ? $argv[2] : null;
 
 try {
-    $sapn = new DatasetProcessor($dataSourceFilePath, $outputDirectory);
+    $processor = new DatasetProcessor($dataSourceFilePath, $outputDirectory);
 
     echo 'Processing file '.$dataSourceFilePath.' ...'.PHP_EOL;
 
-    $sapn->process();
-    $results = $sapn->getResults();
+    $processor->process();
+    $results = $processor->getResults();
 
     echo 'Results:'.PHP_EOL;
     echo '- Processed rows: '.$results['processed'].PHP_EOL;

@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of BrazilianPhoneValidator.
+ *
+ * (c) Cardinal Tecnologia Ltda.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace EmpregoLigado\BrazilianPhoneValidator;
 
 class Validator
@@ -19,22 +28,7 @@ class Validator
 
     public function isValid($phone)
     {
-        return $this->isValidSMP($phone) || $this->isValidSME($phone) || $this->isValidSTFC($phone);
-    }
-
-    public function isValidSMP($phone)
-    {
-        return $this->isValidRange($phone, self::TYPE_SMP);
-    }
-
-    public function isValidSME($phone)
-    {
-        return $this->isValidRange($phone, self::TYPE_SME);
-    }
-
-    public function isValidSTFC($phone)
-    {
-        return $this->isValidRange($phone, self::TYPE_STFC);
+        return $this->isValidSMP($phone) || $this->isValidSTFC($phone) || $this->isValidSME($phone);
     }
 
     public function isValidCellphone($phone)
@@ -47,9 +41,24 @@ class Validator
         return $this->isValidSTFC($phone);
     }
 
+    public function isValidSME($phone)
+    {
+        return $this->isValidRange($phone, self::TYPE_SME);
+    }
+
+    public function isValidSMP($phone)
+    {
+        return $this->isValidRange($phone, self::TYPE_SMP);
+    }
+
+    public function isValidSTFC($phone)
+    {
+        return $this->isValidRange($phone, self::TYPE_STFC);
+    }
+
     private function isValidRange($phone, $type)
     {
-        $phone = trim($phone);
+        $phone = trim(preg_replace('/[^0-9]/', '', $phone));
         $phoneLength = strlen($phone);
 
         if (!is_numeric($phone) || $phoneLength > 11 || $phoneLength < 10) {

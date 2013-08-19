@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of BrazilianPhoneValidator.
+ *
+ * (c) Cardinal Tecnologia Ltda.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace EmpregoLigado\Tests\BrazilianPhoneValidator;
 
 use EmpregoLigado\BrazilianPhoneValidator\Validator;
@@ -58,6 +67,14 @@ class ValidatorTest extends PHPUnit_Framework_TestCase
     public function testIsValidTenDigitsPhone()
     {
         $this->assertTrue($this->validator->isValid('1299871000'));
+    }
+
+    public function testIsValidFormattedPhone()
+    {
+        $this->assertTrue($this->validator->isValid('(11) 99876-1000'));
+        $this->assertTrue($this->validator->isValid('(11) 9-9876-1000'));
+        $this->assertTrue($this->validator->isValid('(11) 998.761.000'));
+        $this->assertTrue($this->validator->isValid('(12) 9987-1000'));
     }
 
     /**
