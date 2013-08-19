@@ -1,6 +1,5 @@
 <?php
 
-namespace EmpregoLigado\BrazilianPhoneValidator;
 /*
  * This file is part of BrazilianPhoneValidator.
  *
@@ -9,6 +8,10 @@ namespace EmpregoLigado\BrazilianPhoneValidator;
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+if (PHP_SAPI !== 'cli') {
+  exit(1);
+}
 
 class DatasetProcessor
 {
@@ -121,7 +124,7 @@ class DatasetProcessor
                     $prefix = $row[3];
                     $initialRange = $row[4];
                     $finalRange = $row[5];
-    
+
                     if ($this->auxPrefix == $prefix) {
                         // This range continues the previous range?
                         if ($this->auxFinalRange + 1 == $initialRange) {
@@ -133,7 +136,7 @@ class DatasetProcessor
                         $this->pushToArray($areaCode, $prefix, $initialRange, $finalRange);
                     }
                 }
-    
+
                 $this->countProcessedRows++;
             }
         }
@@ -247,8 +250,8 @@ TEMPLATE;
 
 function help()
 {
-    //$message  = 'This is the help' . PHP_EOL;
-    //$message .= PHP_EOL;
+    $message  = 'This script generates a dataset file using an Anatel dataset as source.' . PHP_EOL;
+    $message .= PHP_EOL;
     $message  = 'Usage:   php generate-dataset.php [datasource-file] [destination-path]' . PHP_EOL;
     $message .= 'Example: php generate-dataset.php /tmp/FAIXA_SME_20130803_0832_GERAL.txt ../data/' . PHP_EOL;
     $message .= PHP_EOL;
@@ -277,12 +280,12 @@ $dataSourceFilePath = isset($argv[1]) ? $argv[1] : null;
 $outputDirectory = isset($argv[2]) ? $argv[2] : null;
 
 try {
-    $sapn = new DatasetProcessor($dataSourceFilePath, $outputDirectory);
+    $processor = new DatasetProcessor($dataSourceFilePath, $outputDirectory);
 
     echo 'Processing file '.$dataSourceFilePath.' ...'.PHP_EOL;
 
-    $sapn->process();
-    $results = $sapn->getResults();
+    $processor->process();
+    $results = $processor->getResults();
 
     echo 'Results:'.PHP_EOL;
     echo '- Processed rows: '.$results['processed'].PHP_EOL;
