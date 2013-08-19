@@ -58,7 +58,7 @@ class Validator
 
     private function isValidRange($phone, $type)
     {
-        $phone = trim($phone);
+        $phone = trim(preg_replace('/[^0-9]/', '', $phone));
         $phoneLength = strlen($phone);
 
         if (!is_numeric($phone) || $phoneLength > 11 || $phoneLength < 10) {

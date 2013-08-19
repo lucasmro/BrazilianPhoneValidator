@@ -69,6 +69,14 @@ class ValidatorTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($this->validator->isValid('1299871000'));
     }
 
+    public function testIsValidFormattedPhone()
+    {
+        $this->assertTrue($this->validator->isValid('(11) 99876-1000'));
+        $this->assertTrue($this->validator->isValid('(11) 9-9876-1000'));
+        $this->assertTrue($this->validator->isValid('(11) 998.761.000'));
+        $this->assertTrue($this->validator->isValid('(12) 9987-1000'));
+    }
+
     /**
      * @dataProvider invalidPhones
      */
