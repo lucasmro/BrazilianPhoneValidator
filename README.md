@@ -1,75 +1,123 @@
 # BrazilianPhoneValidator
 
-This library is intended to simplify the validation of brazilian phone numbers.
-All validations rules are based on Anatel specifications.
+This library provides a validator for Brazilian telephone numbers based on the
+ranges of telephone numbers from Anatel. It provides validation rules for the
+main telephone types:
 
-##What is Anatel
+- Cellphones - [SMP](http://tinyurl.com/anatel-smX), *Serviço Móvel Pessoal*
+  (Personal Mobile Service) in the Anatel specifications
+- Landline phones - [STFC](http://tinyurl.com/anatel-stfc), *Serviço
+  Telefônico Fixo Comutado* (Switched Landline Telephone Service) in the
+  Anatel specifications
+- Push-to-talk phones - [SME](http://tinyurl.com/anatel-smX) *Serviço Móvel
+  Especializado* (Specialized Mobile Service) in Anatel specifications
+
+
+## What is Anatel?
 
 According to [Wikipedia](http://en.wikipedia.org/wiki/Brazilian_Agency_of_Telecommunications):
-> "The National Telecommunications Agency (in Portuguese, Agência Nacional de Telecomunicações - Anatel) is a special agency in Brazil created by the general telecommunications act (Law 9472, 16/07/1997) in 1997. The agency is administratively and financially independent, and not hierarchically subordinate to any government agency."
 
-## Setup
+> "The National Telecommunications Agency (in Portuguese, Agência Nacional de
+> Telecomunicações - Anatel) is a special agency in Brazil created by the
+> general telecommunications act (Law 9472, 16/07/1997) in 1997. The agency is
+> administratively and financially independent, and not hierarchically
+> subordinate to any government agency."
 
-TODO: Setup
+
+## Requirements
+
+PHP 5.3 or above.
+
+
+## Installation
+
+The easiest way to install BrazilianPhoneValidator is
+[through Composer](http://getcomposer.org/). Just create a `composer.json` file
+for your project:
+
+```JSON
+{
+    "require": {
+        "empregoligado/brazilian-phone-validator": "dev-master"
+    }
+}
+```
+
+And then run these commands:
+
+    $ curl -s http://getcomposer.org/installer | php
+    $ php composer.phar install
+
+Now include the Composer-generated autoload to have access to the library:
+
+```PHP
+<?php
+
+require 'vendor/autoload.php';
+
+$validator = new EmpregoLigado\BrazilianPhoneValidator\Validator();
+```
+
 
 ## Usage
 
-###Validator
+The `EmpregoLigado\BrazilianPhoneValidator\Validator` class provides the
+following high-level public API to validate a Brazilian phone number:
 
-Responsible for validate a brazilian phone number.
-It contains specific validation rules.
+- `isValid($phone)` (any type of phone number)
+- `isValidCellphone($phone)`
+- `isValidLandline($phone)`
 
-**Methods:**
-- **isValid($phone) :** Checks if it is a valid brazilian phone number.
-- **isValidCellphone($phone) :** Checks if it is a valid brazilian cellphone phone number.
-- **isValidLandline($phone) :** Checks if it is a valid brazilian landline phone number.
-- **isValidSMP($phone) :** Checks if it is a valid brazilian cellphone number and specifically from the SMP type.<br/>
-*SMP - Serviço Móvel Pessoal (in English, Personal Mobile Service)*
-- **isValidSME($phone) :** Checks if it is a valid brazilian cellphone number and specifically from the SME type.<br/>
-*SME - Serviço Móvel Especializado (in English, Specialized Mobile Service)*
-- **isValidSTFC($phone) :** Checks if it is a brazilian landline phone number and specifically from STFC type.<br/>
-*STFC - Serviço Telefônico Fixo Comutado (in English, Landline Telephone Service)*
+And the following lower-level public API to validate a specific Brazilian phone
+number type:
+
+- `isValidSME($phone)`
+- `isValidSMP($phone)`
+- `isValidSTFC($phone)`
+
+Where `$phone` is a "numeric" string with the area code and phone number
+(examples: `1149502480` and `6134111200`.)
+
+Usage example:
 
 ```php
 <?php
 
-$phoneValidator = new EmpregoLigado\BrazilianPhoneValidator\Validator();
-$phone = "<PUT_THE_PHONE_NUMBER_HERE>"; //e.g. "11986111000"
+$validator = new EmpregoLigado\BrazilianPhoneValidator\Validator();
 
-// Checks if it is a valid brazilian phone number.
-if (phoneValidator->isValid($phone)) {
+$phone = '6134111200';
+
+// Checks if it is a valid Brazilian phone number.
+if ($validator->isValid($phone)) {
     // success statement
 } else {
     // error statement
 }
 ```
 
-### Creating/Updating the dataset files (Dataset Processor)
 
-Responsible for create and update the dataset files (PHP and JSON) used by the validator class.
-The dataset is generated based on the files provided by Anatel.
+### Creating/updating the dataset files
 
-####Download the latest version from each type (SME, SMP and STFC)
+The dataset files available in the `data/` directory are created and updated
+by the `bin/dataset-processor.php` script. It generates a JSON and a PHP file
+for each processed dataset file.
 
-**SME - Serviço Móvel Especializado (Specialized Mobile Service)**
-http://sistemas.anatel.gov.br/sapn/ArquivosABR/faixaSME.asp?SISQSmodulo=18098
+To process the dataset files correctly, you must download the latest "Geral"
+(general) file, process it and then process all (if any) the additional
+incremental files which the date is greater than the "Geral" file date.
 
-**SMP - Serviço Móvel Pessoal (Personal Mobile Service)**
-http://sistemas.anatel.gov.br/sapn/ArquivosABR/faixaSMP.asp?SISQSmodulo=18099
+    $ php bin/generate-dataset.php /path/to/FAIXA_SMP_20130803_0330_GERAL.txt data/
 
-**STFC - Serviço Telefônico Fixo Comutado (Landline Telephone Service)**
-http://sistemas.anatel.gov.br/sapn/ArquivosABR/faixaSTFC.asp?SISQSmodulo=18100
+This library ships with the latest possible dataset version. You can download
+them independently to use for validation or for other purposes.
 
-* - NOTE: Usually, you should download the incremental version of the file,
-but you can remove all the content from the data directory and create the 
-dataset by yourself. In this case, start processing the general version of 
-the file and its incremental files successively.*
 
-####Processing the dataset
+#### Anatel dataset files (SME, SMP and STFC)
 
-```php
-$ php bin/generate-dataset.php ~/Downloads/FAIXA_SMP_20130803_0330_GERAL.txt data/
-```
+- [SME](http://sistemas.anatel.gov.br/sapn/ArquivosABR/faixaSME.asp?SISQSmodulo=18098)
+- [SMP](http://sistemas.anatel.gov.br/sapn/ArquivosABR/faixaSMP.asp?SISQSmodulo=18099)
+- [STFC](http://sistemas.anatel.gov.br/sapn/ArquivosABR/faixaSTFC.asp?SISQSmodulo=18100)
+
 
 ## License
 
