@@ -253,14 +253,14 @@ function help()
     $message  = 'This script generates a dataset file using an Anatel dataset as source.' . PHP_EOL;
     $message .= PHP_EOL;
     $message  = 'Usage:   php generate-dataset.php [datasource-file] [destination-path]' . PHP_EOL;
-    $message .= 'Example: php generate-dataset.php /tmp/FAIXA_SME_20130803_0832_GERAL.txt ../data/' . PHP_EOL;
+    $message .= 'Example: php generate-dataset.php /path/to/FAIXA_SME_20130803_0832_GERAL.txt ../data/' . PHP_EOL;
     $message .= PHP_EOL;
     $message .= 'Arguments:' . PHP_EOL;
     $message .= 'datasource-file     The path to the datasource file' . PHP_EOL;
     $message .= 'destination-path    Directory to save the generated dataset files (PHP and JSON files)' . PHP_EOL;
     $message .= PHP_EOL;
     $message .= 'Options:' . PHP_EOL;
-    $message .= '-h|--help            Display this help message' . PHP_EOL;
+    $message .= '-h|--help           Display this help message' . PHP_EOL;
     $message .= PHP_EOL;
 
     print $message;
